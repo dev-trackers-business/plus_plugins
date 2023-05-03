@@ -39,7 +39,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
    */
   @Override
   public void onReceive(Context context, Intent intent) {
-    AlarmFlagManager(context,intent);
+    AlarmFlagManager.set(context, intent);
     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK |
         PowerManager.ACQUIRE_CAUSES_WAKEUP |
