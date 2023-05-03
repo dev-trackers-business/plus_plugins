@@ -8,6 +8,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import android.os.Build;
+import android.os.PowerManager;
+
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
   /**
    * Invoked by the OS when a timer goes off.
@@ -36,7 +39,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
    */
   @Override
   public void onReceive(Context context, Intent intent) {
-    AlarmFlagManager.set(context, intent);
     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK |
         PowerManager.ACQUIRE_CAUSES_WAKEUP |
