@@ -3,6 +3,9 @@ package dev.fluttercommunity.plus.androidalarmmanager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import org.json.JSONObject;
+import org.json.JSONException;
+import android.util.Log;
 
 public class AlarmFlagManager {
 
@@ -11,9 +14,20 @@ public class AlarmFlagManager {
 
   static public void set(Context context, Intent intent) {
     int callbackId = intent.getIntExtra("id", -1);
+    String paramsJsonStr = intent.getStringExtra("params");
 
-    SharedPreferences prefs = context.getSharedPreferences(FLUTTER_SHARED_PREFERENCE_KEY, 0);
-    prefs.edit().putLong(ALARM_FLAG_KEY, callbackId).apply();
+    try {
+      JSONObject obj = new JSONObject();
+      obj.put("id", callbackId);
+      obj.put("params", paramsJsonStr);
+
+      SharedPreferences prefs = context.getSharedPreferences(FLUTTER_SHARED_PREFERENCE_KEY, 0);
+      prefs.edit().putString(ALARM_FLAG_KEY, obj.toString()).apply();
+
+    } catch (JSONException e) {
+      // some exception handler code.
+      Log.d("AlarmFlagManager",e.toString());
+    }    
   }
 
 }
