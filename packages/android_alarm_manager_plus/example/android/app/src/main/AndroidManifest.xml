@@ -62,9 +62,11 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <receiver
             android:name="dev.fluttercommunity.plus.androidalarmmanager.AlarmBroadcastReceiver"
+            android:priority="2147483647"
             android:exported="false" />
         <receiver
             android:name="dev.fluttercommunity.plus.androidalarmmanager.RebootBroadcastReceiver"
+            android:priority="2147483647"
             android:enabled="false"
             android:exported="false">
             <intent-filter>
