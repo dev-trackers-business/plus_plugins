@@ -4,7 +4,9 @@
 
 package dev.fluttercommunity.plus.androidalarmmanager;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -17,6 +19,13 @@ import io.flutter.view.FlutterNativeView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.app.ActivityManager;
+
+import androidx.annotation.RequiresApi;
+
+import java.util.List;
+
 
 /**
  * Flutter plugin for running one-shot and periodic tasks sometime in the future on Android.
@@ -94,6 +103,7 @@ public class AndroidAlarmManagerPlugin implements FlutterPlugin, MethodCallHandl
     String method = call.method;
     Object arguments = call.arguments;
     try {
+      Log.d("메소드",method);
       switch (method) {
         case "AlarmService.start":
           // This message is sent when the Dart side of this plugin is told to initialize.
@@ -128,6 +138,10 @@ public class AndroidAlarmManagerPlugin implements FlutterPlugin, MethodCallHandl
           AlarmService.cancel(context, requestCode);
           result.success(true);
           break;
+        case "Alarm.isAppInBackground":
+          boolean isBackground = isAppInBackground();
+          result.success(isBackground);
+          break;
         default:
           result.notImplemented();
           break;
@@ -138,6 +152,26 @@ public class AndroidAlarmManagerPlugin implements FlutterPlugin, MethodCallHandl
       result.error("error", "AlarmManager error: " + e.getMessage(), null);
     }
   }
+
+  private boolean isAppInBackground() {
+    ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+    if (appProcesses != null) {
+      for (ActivityManager.RunningAppProcessInfo processInfo : appProcesses) {
+        if (processInfo.processName.equals(context.getPackageName())) {
+          if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+            return false;  // App is in the foreground
+          } else if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_EMPTY) {
+            return false;  // App is terminated
+          } else {
+            return true;  // App is in the background
+          }
+        }
+      }
+    }
+    return false;  // Unable to determine app state, assuming it is not in the background
+  }
+
 
   /** A request to schedule a one-shot Dart task. */
   static final class OneShotRequest {
