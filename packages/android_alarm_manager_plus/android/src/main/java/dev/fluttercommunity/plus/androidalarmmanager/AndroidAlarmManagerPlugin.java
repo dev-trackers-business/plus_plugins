@@ -161,8 +161,9 @@ public class AndroidAlarmManagerPlugin implements FlutterPlugin, MethodCallHandl
         if (processInfo.processName.equals(context.getPackageName())) {
           if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
             return false;  // App is in the foreground
-          } else if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_EMPTY) {
-            return false;  // App is terminated
+          } else if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_EMPTY ||
+                    processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_GONE) {
+            return true;  // App is terminated
           } else {
             return true;  // App is in the background
           }
