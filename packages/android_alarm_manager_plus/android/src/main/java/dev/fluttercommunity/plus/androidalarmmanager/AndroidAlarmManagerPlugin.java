@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ActivityManager;
+import android.os.PowerManager;
 
 import androidx.annotation.RequiresApi;
 
@@ -142,6 +143,10 @@ public class AndroidAlarmManagerPlugin implements FlutterPlugin, MethodCallHandl
           boolean isBackground = isAppInBackground();
           result.success(isBackground);
           break;
+        case "Alarm.isScreenOn":
+          boolean isScreenOn = isScreenOn();
+          result.success(isScreenOn);
+          break;
         default:
           result.notImplemented();
           break;
@@ -173,6 +178,11 @@ public class AndroidAlarmManagerPlugin implements FlutterPlugin, MethodCallHandl
     return false;  // Unable to determine app state, assuming it is not in the background
   }
 
+    private boolean isScreenOn() {
+      PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+      boolean isScreenOn = pm.isInteractive();
+      return isScreenOn;
+  }
 
   /** A request to schedule a one-shot Dart task. */
   static final class OneShotRequest {
